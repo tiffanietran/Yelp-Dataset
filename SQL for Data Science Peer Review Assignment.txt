@@ -1,0 +1,393 @@
+Part 1: Yelp Dataset Profiling and Understanding
+
+1. Profile the data by finding the total number of records for each of the tables below:
+	
+i. Attribute table = 10000
+ii. Business table = 10000
+iii. Category table = 10000
+iv. Checkin table = 10000
+v. elite_years table = 10000
+vi. friend table = 10000
+vii. hours table = 10000
+viii. photo table = 10000
+ix. review table = 10000
+x. tip table = 10000
+xi. user table = 10000
+	
+
+
+2. Find the total distinct records by either the foreign key or primary key for each table. If two foreign keys are listed in the table, please specify which foreign key.
+
+i. Business = 10000
+ii. Hours = 1562
+iii. Category = 2643
+iv. Attribute = 1115
+v. Review = id: 10000, business_id: 8090, user_id: 9581
+vi. Checkin = 493
+vii. Photo = id: 10000, business_id: 6493
+viii. Tip = user_id: 537, business_id: 3979
+ix. User = 10000
+x. Friend = 11
+xi. Elite_years = 2780
+
+Note: Primary Keys are denoted in the ER-Diagram with a yellow key icon.	
+
+
+
+3. Are there any columns with null values in the Users table? Indicate "yes," or "no."
+
+	Answer: No
+	
+	
+	SQL code used to arrive at answer:
+
+		SELECT * FROM user
+		WHERE id IS NULL OR
+		name IS NULL OR
+		review_count IS NULL OR
+		yelping_since IS NULL OR
+		useful IS NULL OR
+		funny IS NULL OR
+		cool IS NULL OR
+		fans IS NULL OR 
+		average_stars IS NULL OR
+		compliment_hot IS NULL OR 
+		compliment_more IS NULL OR 
+		compliment_profile IS NULL OR 
+		compliment_cute IS NULL OR 
+		compliment_list IS NULL OR 
+		compliment_note IS NULL OR 
+		compliment_plain IS NULL OR 
+		compliment_cool IS NULL OR
+		compliment_funny IS NULL OR
+		compliment_writer IS NULL OR
+		compliment_photos IS NULL
+	
+
+	
+4. For each table and column listed below, display the smallest (minimum), largest (maximum), and average (mean) value for the following fields:
+
+	i. Table: Review, Column: Stars
+	
+		min: 1		max: 5		avg: 3.7082
+		
+	
+	ii. Table: Business, Column: Stars
+	
+		min: 1		max: 5		avg: 3.6549
+		
+	
+	iii. Table: Tip, Column: Likes
+	
+		min: 0		max: 2		avg: 0.0144
+		
+	
+	iv. Table: Checkin, Column: Count
+	
+		min: 1		max: 53		avg: 1.9414
+		
+	
+	v. Table: User, Column: Review_count
+	
+		min: 0		max: 2000	avg: 24.2995
+		
+
+
+5. List the cities with the most reviews in descending order:
+
+	SQL code used to arrive at answer:
+
+		SELECT city, SUM(review_count) as total_reviews FROM business
+		GROUP BY city
+		ORDER BY total_reviews DESC
+	
+	Copy and Paste the Result Below:
+	
+		+-----------------+---------------+
+		| city            | total_reviews |
+		+-----------------+---------------+
+		| Las Vegas       |         82854 |
+		| Phoenix         |         34503 |
+		| Toronto         |         24113 |
+		| Scottsdale      |         20614 |
+		| Charlotte       |         12523 |
+		| Henderson       |         10871 |
+		| Tempe           |         10504 |
+		| Pittsburgh      |          9798 |
+		| Montréal        |          9448 |
+		| Chandler        |          8112 |
+		| Mesa            |          6875 |
+		| Gilbert         |          6380 |
+		| Cleveland       |          5593 |
+		| Madison         |          5265 |
+		| Glendale        |          4406 |
+		| Mississauga     |          3814 |
+		| Edinburgh       |          2792 |
+		| Peoria          |          2624 |
+		| North Las Vegas |          2438 |
+		| Markham         |          2352 |
+		| Champaign       |          2029 |
+		| Stuttgart       |          1849 |
+		| Surprise        |          1520 |
+		| Lakewood        |          1465 |
+		| Goodyear        |          1155 |
+		+-----------------+---------------+
+	
+6. Find the distribution of star ratings to the business in the following cities:
+
+i. Avon
+
+SQL code used to arrive at answer:
+
+	SELECT stars, COUNT(stars) as total_stars FROM business
+	WHERE city = 'Avon'
+	GROUP BY stars
+	ORDER BY stars ASC
+
+Copy and Paste the Resulting Table Below (2 columns â€“ star rating and count):
+
+	+-------+-------------+
+	| stars | total_stars |
+	+-------+-------------+
+	|   1.5 |           1 |
+	|   2.5 |           2 |
+	|   3.5 |           3 |
+	|   4.0 |           2 |
+	|   4.5 |           1 |
+	|   5.0 |           1 |
+	+-------+-------------+
+
+ii. Beachwood
+
+SQL code used to arrive at answer:
+
+	SELECT stars, COUNT(stars) as total_stars FROM business
+	WHERE city = 'Beachwood'
+	GROUP BY stars
+	ORDER BY stars ASC
+
+Copy and Paste the Resulting Table Below (2 columns â€“ star rating and count):
+		
+	+-------+-------------+
+	| stars | total_stars |
+	+-------+-------------+
+	|   2.0 |           1 |
+	|   2.5 |           1 |
+	|   3.0 |           2 |
+	|   3.5 |           2 |
+	|   4.0 |           1 |
+	|   4.5 |           2 |
+	|   5.0 |           5 |
+	+-------+-------------+
+
+7. Find the top 3 users based on their total number of reviews:
+		
+	SQL code used to arrive at answer:
+
+		SELECT name, review_count as total_reviews FROM user
+		ORDER BY total_reviews DESC
+		LIMIT 3
+	
+	Copy and Paste the Result Below:
+		
+		+--------+---------------+
+		| name   | total_reviews |
+		+--------+---------------+
+		| Gerald |          2000 |
+		| Sara   |          1629 |
+		| Yuri   |          1339 |
+		+--------+---------------+
+
+8. Does posing more reviews correlate with more fans?
+
+	Please explain your findings and interpretation of the results:
+
+		Not necessarily, there doesn't appear to be a direct correlation between the total reviews posted and the number of fans a user has. 
+		Amy has more fans than Gerald which suggests that yelping_since plays a factor in the number of fans. 
+	
+		+-----------+------+---------------------+---------------+
+		| name      | fans | yelping_since       | total_reviews |
+		+-----------+------+---------------------+---------------+
+		| Amy       |  503 | 2007-07-19 00:00:00 |           609 |
+		| Mimi      |  497 | 2011-03-30 00:00:00 |           968 |
+		| Harald    |  311 | 2012-11-27 00:00:00 |          1153 |
+		| Gerald    |  253 | 2012-12-16 00:00:00 |          2000 |
+		| Christine |  173 | 2009-07-08 00:00:00 |           930 |
+		| Lisa      |  159 | 2009-10-05 00:00:00 |           813 |
+		| Cat       |  133 | 2009-02-05 00:00:00 |           377 |
+		| William   |  126 | 2015-02-19 00:00:00 |          1215 |
+		| Fran      |  124 | 2012-04-05 00:00:00 |           862 |
+		| Lissa     |  120 | 2007-08-14 00:00:00 |           834 |
+		+-----------+------+---------------------+---------------+
+	
+9. Are there more reviews with the word "love" or with the word "hate" in them?
+
+	Answer: There are more reviews with the word "love".
+		Love count = 1780
+		Hate count = 232
+
+	
+	SQL code used to arrive at answer:
+
+		SELECT COUNT(*) FROM review
+		WHERE text LIKE '%love%'	
+
+		SELECT COUNT(*) FROM review
+		WHERE text LIKE '%hate%'	
+
+
+	
+10. Find the top 10 users with the most fans:
+
+	SQL code used to arrive at answer:
+
+		SELECT name, fans, FROM user
+		ORDER BY fans DESC
+		LIMIT 10
+	
+	
+	Copy and Paste the Result Below:
+
+		+-----------+------+
+		| name      | fans |
+		+-----------+------+
+		| Amy       |  503 | 
+		| Mimi      |  497 | 
+	 	| Harald    |  311 | 
+		| Gerald    |  253 | 
+		| Christine |  173 | 
+		| Lisa      |  159 | 
+		| Cat       |  133 | 
+		| William   |  126 | 
+		| Fran      |  124 | 
+		| Lissa     |  120 | 
+		+-----------+------+
+
+	
+		
+
+Part 2: Inferences and Analysis
+
+1. Pick one city and category of your choice and group the businesses in that city or category by their overall star rating. Compare the businesses with 2-3 stars to the businesses with 4-5 stars and answer the following questions. Include your code.
+	
+i. Do the two groups you chose to analyze have a different distribution of hours?
+
+	Yes, the 4-5 stars typically open later and close later than the 2-3 stars. 
+
+ii. Do the two groups you chose to analyze have a different number of reviews?
+       
+   	Yes, the 4-5 stars have more reviews than the 2-3 stars.
+      
+iii. Are you able to infer anything from the location data provided between these two groups? Explain.
+
+	Yes, the restaurants located in the Downtown Core neighborhood have low ratings.
+
+SQL code used for analysis:
+
+	SELECT b.name,
+    		b.city,
+   		b.stars,
+    		b.neighborhood,
+    		b.review_count, 
+    		c.category,
+   	 	h.hours,
+        CASE 
+            	WHEN b.stars >= 2 AND b.stars < 4 THEN 'OKAY'
+            	WHEN b.stars >= 4 THEN 'GREAT'
+            	ELSE 'BAD'
+        END AS rating
+	FROM business b
+	INNER JOIN category c ON b.id = c.business_id
+	INNER JOIN hours h ON b.id = h.business_id
+	WHERE b.city = 'Toronto' AND c.category = 'Restaurants'
+	GROUP BY hours, name
+		
+		
+2. Group business based on the ones that are open and the ones that are closed. What differences can you find between the ones that are still open and the ones that are closed? List at least two differences and the SQL code you used to arrive at your answer.
+		
+i. Difference 1: The closed businesses have a lower average star rating.
+         
+         
+ii. Difference 2: The closed business have a lower average review count.
+         
+         
+SQL code used for analysis:
+
+	SELECT COUNT(DISTINCT(id)) AS total_business,
+    		AVG(stars),
+    		AVG(review_count),
+    		SUM(review_count),
+    		is_open
+	FROM business
+	GROUP BY is_open	
+	
+3. For this last part of your analysis, you are going to choose the type of analysis you want to conduct on the Yelp dataset and are going to prepare the data for analysis.
+
+Ideas for analysis include: Parsing out keywords and business attributes for sentiment analysis, clustering businesses to find commonalities or anomalies between them, predicting the overall star rating for a business, predicting the number of fans a user will have, and so on. These are just a few examples to get you started, so feel free to be creative and come up with your own problem you want to solve. Provide answers, in-line, to all of the following:
+	
+i. Indicate the type of analysis you chose to do:
+         
+	I wanted to see if nicer reviewers had more fans.
+         
+ii. Write 1-2 brief paragraphs on the type of data you will need for your analysis and why you chose that data:
+                           
+I need the name of the reviewer, number of fans to see the ranking and the average stars given by each reviewer. 
+I also decided to include yelping_since and review_count to see if that could provide additional insight.
+I used CASE to create a "niceness scale" for each reviewer. The data output suggests that niceness is a factor.
+However, review_count and yelping_since seem to be a bigger driver since the data output follows a standard 
+deviation. I noted that most users on the extreme ends of the spectrum (i.e. 'Really Mean' and 'Super Nice') 
+did not rate consistently enough to gain fans the exception being those who had a high review_count. So to some 
+extent nicer reviews did have more fans since 'Really Mean' reviewers tended to leave more one off reviews.
+Overall I concluded that the review_count and yelping_since have a greater influence on the number of fans. 
+Although, it would be interesting to see what the data output would be if there was more demographic info on 
+the users such as city, age, gender, etc.
+			                  
+iii. Output of your finished dataset:
+
++------------------------+-----------+------+---------------------+---------------+--------------+------------+
+| id                     | name      | fans | yelping_since       | average_stars | review_count | nice_scale |
++------------------------+-----------+------+---------------------+---------------+--------------+------------+
+| -9I98YbNQnLdAmcYfb324Q | Amy       |  503 | 2007-07-19 00:00:00 |          3.21 |          609 | NICE       |
+| -8EnCioUmDygAbsYZmTeRQ | Mimi      |  497 | 2011-03-30 00:00:00 |          4.05 |          968 | SUPER NICE |
+| --2vR0DIsmQ6WfcSzKWigw | Harald    |  311 | 2012-11-27 00:00:00 |           4.4 |         1153 | SUPER NICE |
+| -G7Zkl1wIWBBmD0KRy_sCw | Gerald    |  253 | 2012-12-16 00:00:00 |           3.6 |         2000 | NICE       |
+| -0IiMAZI2SsQ7VmyzJjokQ | Christine |  173 | 2009-07-08 00:00:00 |          3.69 |          930 | NICE       |
+| -g3XIcCb2b-BD0QBCcq2Sw | Lisa      |  159 | 2009-10-05 00:00:00 |          4.09 |          813 | SUPER NICE |
+| -9bbDysuiWeo2VShFJJtcw | Cat       |  133 | 2009-02-05 00:00:00 |          3.99 |          377 | NICE       |
+| -FZBTkAZEXoP7CYvRV2ZwQ | William   |  126 | 2015-02-19 00:00:00 |          4.41 |         1215 | SUPER NICE |
+| -9da1xk7zgnnfO1uTVYGkA | Fran      |  124 | 2012-04-05 00:00:00 |           4.1 |          862 | SUPER NICE |
+| -lh59ko3dxChBSZ9U7LfUw | Lissa     |  120 | 2007-08-14 00:00:00 |          3.68 |          834 | NICE       |
+| -B-QEUESGWHPE_889WJaeg | Mark      |  115 | 2009-05-31 00:00:00 |          3.36 |          861 | NICE       |
+| -DmqnhW4Omr3YhmnigaqHg | Tiffany   |  111 | 2008-10-28 00:00:00 |          4.09 |          408 | SUPER NICE |
+| -cv9PPT7IHux7XUc9dOpkg | bernice   |  105 | 2007-08-29 00:00:00 |          3.95 |          255 | NICE       |
+| -DFCC64NXgqrxlO8aLU5rg | Roanna    |  104 | 2006-03-28 00:00:00 |          3.71 |         1039 | NICE       |
+| -IgKkE8JvYNWeGu8ze4P8Q | Angela    |  101 | 2010-10-01 00:00:00 |          3.89 |          694 | NICE       |
+| -K2Tcgh2EKX6e6HqqIrBIQ | .Hon      |  101 | 2006-07-19 00:00:00 |          3.14 |         1246 | NICE       |
+| -4viTt9UC44lWCFJwleMNQ | Ben       |   96 | 2007-03-10 00:00:00 |           3.7 |          307 | NICE       |
+| -3i9bhfvrM3F1wsC9XIB8g | Linda     |   89 | 2005-08-07 00:00:00 |          4.06 |          584 | SUPER NICE |
+| -kLVfaJytOJY2-QdQoCcNQ | Christina |   85 | 2012-10-08 00:00:00 |           4.1 |          842 | SUPER NICE |
+| -ePh4Prox7ZXnEBNGKyUEA | Jessica   |   84 | 2009-01-12 00:00:00 |           4.1 |          220 | SUPER NICE |
+| -4BEUkLvHQntN6qPfKJP2w | Greg      |   81 | 2008-02-16 00:00:00 |          3.67 |          408 | NICE       |
+| -C-l8EHSLXtZZVfUAUhsPA | Nieves    |   80 | 2013-07-08 00:00:00 |          3.64 |          178 | NICE       |
+| -dw8f7FLaUmWR7bfJ_Yf0w | Sui       |   78 | 2009-09-07 00:00:00 |          3.62 |          754 | NICE       |
+| -8lbUNlXVSoXqaRRiHiSNg | Yuri      |   76 | 2008-01-03 00:00:00 |          4.11 |         1339 | SUPER NICE |
+| -0zEEaDFIjABtPQni0XlHA | Nicole    |   73 | 2009-04-30 00:00:00 |          3.87 |          161 | NICE       |
++------------------------+-----------+------+---------------------+---------------+--------------+------------+
+         
+iv. Provide the SQL code you used to create your final dataset:
+
+SELECT u.id,
+	u.name, 
+	u.fans, 
+	u.yelping_since, 
+	u.average_stars, 
+	u.review_count,
+CASE 
+	WHEN u.average_stars <=1 THEN 'REALLY MEAN'
+	WHEN u.average_stars >1 AND u.average_stars <=2 THEN 'MEAN'
+    	WHEN u.average_stars >2 AND u.average_stars <=3 THEN 'OKAY'
+    	WHEN u.average_stars >3 AND u.average_stars <=4 THEN 'NICE'
+	ELSE 'SUPER NICE'
+END AS nice_scale
+FROM user u
+ORDER BY fans DESC
